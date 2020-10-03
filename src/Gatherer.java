@@ -3,7 +3,7 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class Gatherer extends Actor implements Collision {
-    private Point direction = Direction.UP;
+    private Point direction = Direction.LEFT;
     private boolean carrying = false;
     private boolean active = true;
     public static final String TYPE = "Gatherer";
