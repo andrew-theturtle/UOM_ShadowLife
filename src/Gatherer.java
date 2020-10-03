@@ -165,10 +165,14 @@ public class Gatherer extends Actor implements Collision {
                 Tree tree = ((Tree) actors.get(treeIndex));
                 if (!tree.isEmpty()) {
                     tree.harvest();
+                    this.setCarrying(true);
+                    this.setDirection(Direction.rotate180Clockwise(this.getDirection()));
                 }
+            } else {
+                this.setCarrying(true);
+                this.setDirection(Direction.rotate180Clockwise(this.getDirection()));
             }
-            this.setCarrying(true);
-            this.setDirection(Direction.rotate180Clockwise(this.getDirection()));
+
         }
         int storageIndex = standOnStorage(location);
         if (storageIndex != -1) {
