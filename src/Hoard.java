@@ -21,12 +21,18 @@ public class Hoard extends Actor implements Storage {
         return numFruits == 0;
     }
 
+    public int getNumFruits() {
+        return numFruits;
+    }
+
     @Override
     public void draw() {
-        super.draw();
-        font.drawString("" + numFruits,
-                getLocation().x - getImage().getWidth() / 2,
-                getLocation().y - getImage().getHeight() / 2);
+        if (isVisibility()) {
+            super.draw();
+            font.drawString("" + numFruits,
+                    getLocation().x,
+                    getLocation().y);
+        }
     }
 
     @Override

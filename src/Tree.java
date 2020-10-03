@@ -18,10 +18,12 @@ public class Tree extends Actor {
 
     @Override
     public void draw() {
-        super.draw();
-        font.drawString("" + numFruits,
-                getLocation().x - getImage().getWidth() / 2,
-                getLocation().y - getImage().getHeight() / 2);
+        if (isVisibility()) {
+            super.draw();
+            font.drawString("" + numFruits,
+                    getLocation().x,
+                    getLocation().y);
+        }
     }
 
     @Override

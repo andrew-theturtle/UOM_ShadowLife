@@ -5,6 +5,7 @@ import bagel.util.Point;
 public abstract class Actor {
     private Image image;
     private Point location;
+    private boolean visibility = true;
     protected Font font = new Font("res/VeraMono.ttf", 20);
     protected ShadowLife game;
     public String type;
@@ -28,8 +29,18 @@ public abstract class Actor {
         this.location = location;
     }
 
+    public boolean isVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(boolean visibility) {
+        this.visibility = visibility;
+    }
+
     public void draw() {
-        image.draw(location.x, location.y);
+        if (visibility) {
+            image.drawFromTopLeft(location.x, location.y);
+        }
     }
 
     public final void tick() {

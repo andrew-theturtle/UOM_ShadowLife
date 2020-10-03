@@ -17,16 +17,22 @@ public class Stockpile extends Actor implements Storage {
         numFruits--;
     }
 
+    public int getNumFruits() {
+        return numFruits;
+    }
+
     public boolean isEmpty() {
         return numFruits == 0;
     }
 
     @Override
     public void draw() {
-        super.draw();
-        font.drawString("" + numFruits,
-                getLocation().x - getImage().getWidth() / 2,
-                getLocation().y - getImage().getHeight() / 2);
+        if (isVisibility()) {
+            super.draw();
+            font.drawString("" + numFruits,
+                    getLocation().x,
+                    getLocation().y);
+        }
     }
 
     @Override
