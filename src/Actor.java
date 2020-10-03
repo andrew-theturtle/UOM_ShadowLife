@@ -6,9 +6,11 @@ public abstract class Actor {
     private Image image;
     private Point location;
     private boolean visibility = true;
+    private boolean tickUpdate = false;
     protected Font font = new Font("res/VeraMono.ttf", 20);
     protected ShadowLife game;
     public String type;
+
 
     public Actor(Point location, ShadowLife game, String type, String imgSrc) {
         this.image = new Image(imgSrc);
@@ -35,6 +37,14 @@ public abstract class Actor {
 
     public void setVisibility(boolean visibility) {
         this.visibility = visibility;
+    }
+
+    public boolean isTickUpdate() {
+        return tickUpdate;
+    }
+
+    public void setTickUpdate(boolean tickUpdate) {
+        this.tickUpdate = tickUpdate;
     }
 
     public void draw() {

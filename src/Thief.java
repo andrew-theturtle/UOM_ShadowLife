@@ -10,7 +10,7 @@ public class Thief extends Actor implements Collision {
     public static final String TYPE = "Thief";
 
     public Thief(Point location, ShadowLife game) {
-        super(location, game, TYPE, "src/images/thief.png");
+        super(location, game, TYPE, "res/images/thief.png");
     }
 
     public Point getDirection() {
@@ -117,15 +117,15 @@ public class Thief extends Actor implements Collision {
         return -1;
     }
 
-    public boolean standOnGatherer(Point location) {
+    public int standOnGatherer(Point location) {
         ArrayList<Actor> actors = game.getActors();
         for (int i = 0; i < actors.size(); i++) {
             Point tmp = actors.get(i).getLocation();
             if (tmp.equals(location) && actors.get(i).type.equals("Gatherer")) {
-                return true;
+                return i;
             }
         }
-        return false;
+        return -1;
     }
 
     public boolean standOnPad(Point location) {
@@ -193,15 +193,25 @@ public class Thief extends Actor implements Collision {
         if (standOnPad(location)) {
             consuming = true;
         }
+        int gathererIndex = standOnGatherer(location);
+        if (gathererIndex != -1) {
+            Gatherer gatherer = (Gatherer) actors.get(gathererIndex);
+            if (gatherer.isTickUpdate()) {
+                this.setDirection(Direction.rotate270Clockwise(direction));
+            }
+        }
         int treeIndex = standOnTree(location);
         if (treeIndex != -1 && !carrying) {
             if (actors.get(treeIndex).type.equals("Tree")) {
                 Tree tree = ((Tree) actors.get(treeIndex));
                 if (!tree.isEmpty()) {
                     tree.harvest();
+                    carrying = true;
                 }
+            } else {
+                carrying = true;
             }
-            carrying = true;
+
         }
         int storageIndex = standOnStorage(location);
         if (storageIndex != -1) {
