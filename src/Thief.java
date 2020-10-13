@@ -2,55 +2,87 @@ import bagel.util.Point;
 
 import java.util.ArrayList;
 
-public class Thief extends Actor implements Collision {
+/**
+ * A Thief contains state and performs action every tick
+ */
+public class Thief extends Actor {
     private Point direction = Direction.UP;
     private boolean carrying = false;
     private boolean consuming = false;
     private boolean active = true;
     public static final String TYPE = "Thief";
 
+    /**
+     * Create a thief at a specified location in a given game
+     */
     public Thief(Point location, ShadowLife game) {
         super(location, game, TYPE, "res/images/thief.png");
     }
 
+    /**
+     * @return Return current direction of the thief
+     */
     public Point getDirection() {
         return direction;
     }
 
+    /**
+     * Set the direction of the thief
+     */
     public void setDirection(Point direction) {
         this.direction = direction;
     }
 
+    /**
+     * @return Return the carrying state of the thief
+     */
     public boolean isCarrying() {
         return carrying;
     }
 
+    /**
+     * Set the carrying state of the thief
+     */
     public void setCarrying(boolean carrying) {
         this.carrying = carrying;
     }
 
+    /**
+     * @return Return the consuming state of the thief
+     */
     public boolean isConsuming() {
         return consuming;
     }
 
+    /**
+     * Set the consuming state of the thief
+     */
     public void setConsuming(boolean consuming) {
         this.consuming = consuming;
     }
 
+    /**
+     * @return Return the thief's state
+     */
     public boolean isActive() {
         return active;
     }
 
+    /**
+     * Set the state of the thief
+     */
     public void setActive(boolean active) {
         this.active = active;
     }
 
-    @Override
-    public boolean standOnPool(Point location) {
+    /**
+     * @return Return true if the thief is stand on a pool
+     */
+    public boolean standOnPool() {
         ArrayList<Actor> actors = game.getActors();
         for (int i = 0; i < actors.size(); i++) {
             Point tmp = actors.get(i).getLocation();
-            if (tmp.equals(location) &&
+            if (tmp.equals(this.getLocation()) &&
                     actors.get(i).type.equals("MitosisPool")) {
                 return true;
             }
@@ -58,24 +90,29 @@ public class Thief extends Actor implements Collision {
         return false;
     }
 
-    @Override
-    public boolean standOnFence(Point location) {
+    /**
+     * @return Return true if the thief is stand on a fence
+     */
+    public boolean standOnFence() {
         ArrayList<Actor> actors = game.getActors();
         for (int i = 0; i < actors.size(); i++) {
             Point tmp = actors.get(i).getLocation();
-            if (tmp.equals(location) && actors.get(i).type.equals("Fence")) {
+            if (tmp.equals(this.getLocation()) && actors.get(i).type.equals("Fence")) {
                 return true;
             }
         }
         return false;
     }
 
-    @Override
-    public int standOnSign(Point location) {
+    /**
+     * @return Return the sign index in the main actors list
+     * that the thief stand on. If not return -1.
+     */
+    public int standOnSign() {
         ArrayList<Actor> actors = game.getActors();
         for (int i = 0; i < actors.size(); i++) {
             Point tmp = actors.get(i).getLocation();
-            if (tmp.equals(location)) {
+            if (tmp.equals(this.getLocation())) {
                 if (actors.get(i).type.equals("SignUp") ||
                         actors.get(i).type.equals("SignDown") ||
                         actors.get(i).type.equals("SignRight") ||
@@ -87,12 +124,15 @@ public class Thief extends Actor implements Collision {
         return -1;
     }
 
-    @Override
-    public int standOnStorage(Point location) {
+    /**
+     * @return Return the storage object index in the main actors list
+     * that the thief stand on. If not return -1.
+     */
+    public int standOnStorage() {
         ArrayList<Actor> actors = game.getActors();
         for (int i = 0; i < actors.size(); i++) {
             Point tmp = actors.get(i).getLocation();
-            if (tmp.equals(location)) {
+            if (tmp.equals(this.getLocation())) {
                 if (actors.get(i).type.equals("Hoard") ||
                         actors.get(i).type.equals("Stockpile")) {
                     return i;
@@ -102,12 +142,15 @@ public class Thief extends Actor implements Collision {
         return -1;
     }
 
-    @Override
-    public int standOnTree(Point location) {
+    /**
+     * @return Return the tree index in the main actors list
+     * that the thief stand on. If not return -1.
+     */
+    public int standOnTree() {
         ArrayList<Actor> actors = game.getActors();
         for (int i = 0; i < actors.size(); i++) {
             Point tmp = actors.get(i).getLocation();
-            if (tmp.equals(location)) {
+            if (tmp.equals(this.getLocation())) {
                 if (actors.get(i).type.equals("Tree") ||
                         actors.get(i).type.equals("GoldenTree")) {
                     return i;
@@ -117,28 +160,38 @@ public class Thief extends Actor implements Collision {
         return -1;
     }
 
-    public int standOnGatherer(Point location) {
+    /**
+     * @return Return the gatherer index in the main actors list
+     * that the thief stand on. If not return -1.
+     */
+    public int standOnGatherer() {
         ArrayList<Actor> actors = game.getActors();
         for (int i = 0; i < actors.size(); i++) {
             Point tmp = actors.get(i).getLocation();
-            if (tmp.equals(location) && actors.get(i).type.equals("Gatherer")) {
+            if (tmp.equals(this.getLocation()) && actors.get(i).type.equals("Gatherer")) {
                 return i;
             }
         }
         return -1;
     }
 
-    public boolean standOnPad(Point location) {
+    /**
+     * @return Return true if the thief is stand on a pad
+     */
+    public boolean standOnPad() {
         ArrayList<Actor> actors = game.getActors();
         for (int i = 0; i < actors.size(); i++) {
             Point tmp = actors.get(i).getLocation();
-            if (tmp.equals(location) && actors.get(i).type.equals("Pad")) {
+            if (tmp.equals(this.getLocation()) && actors.get(i).type.equals("Pad")) {
                 return true;
             }
         }
         return false;
     }
 
+    /**
+     * Thief movement update in each tick
+     */
     @Override
     public void update() {
         ArrayList<Actor> actors = game.getActors();
@@ -146,22 +199,21 @@ public class Thief extends Actor implements Collision {
             this.move(direction.x * ShadowLife.TILE_SIZE,
                     direction.y * ShadowLife.TILE_SIZE);
         }
-        Point location = this.getLocation();
-        if (standOnFence(location)) {
+        if (standOnFence()) {
             setActive(false);
             moveBack(direction.x * ShadowLife.TILE_SIZE,
                     direction.y * ShadowLife.TILE_SIZE);
         }
-        if (standOnPool(location)) {
+        if (standOnPool()) {
             Point currDirection = this.getDirection();
             // Create new thief at its position with its direction
             // rotated 90 degrees counter-clockwise.
-            Thief newThiefOne = new Thief(location, this.game);
+            Thief newThiefOne = new Thief(this.getLocation(), this.game);
             newThiefOne.setDirection(Direction.rotate90CounterClockwise(currDirection));
             Point newThiefOneDirection = newThiefOne.direction;
             // Create new thief at its position with its direction
             // rotated 90 degrees clockwise.
-            Thief newThiefTwo = new Thief(location, this.game);
+            Thief newThiefTwo = new Thief(this.getLocation(), this.game);
             newThiefTwo.setDirection(Direction.rotate90Clockwise(currDirection));
             Point newThiefTwoDirection = newThiefTwo.direction;
             // Move both thieves
@@ -176,7 +228,7 @@ public class Thief extends Actor implements Collision {
             this.setActive(false);
             this.setVisibility(false);
         }
-        int signIndex = standOnSign(location);
+        int signIndex = standOnSign();
         if (signIndex != -1) {
             Point signDirection;
             if (actors.get(signIndex).type.equals("SignRight")) {
@@ -190,17 +242,17 @@ public class Thief extends Actor implements Collision {
             }
             this.setDirection(signDirection);
         }
-        if (standOnPad(location)) {
+        if (standOnPad()) {
             consuming = true;
         }
-        int gathererIndex = standOnGatherer(location);
+        int gathererIndex = standOnGatherer();
         if (gathererIndex != -1) {
             Gatherer gatherer = (Gatherer) actors.get(gathererIndex);
             if (gatherer.isTickUpdate()) {
                 this.setDirection(Direction.rotate270Clockwise(direction));
             }
         }
-        int treeIndex = standOnTree(location);
+        int treeIndex = standOnTree();
         if (treeIndex != -1 && !carrying) {
             if (actors.get(treeIndex).type.equals("Tree")) {
                 Tree tree = ((Tree) actors.get(treeIndex));
@@ -213,7 +265,7 @@ public class Thief extends Actor implements Collision {
             }
 
         }
-        int storageIndex = standOnStorage(location);
+        int storageIndex = standOnStorage();
         if (storageIndex != -1) {
             if (actors.get(storageIndex).type.equals("Hoard")) {
                 Hoard hoard = (Hoard) actors.get(storageIndex);

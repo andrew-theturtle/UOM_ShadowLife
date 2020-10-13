@@ -2,46 +2,72 @@ import bagel.util.Point;
 
 import java.util.ArrayList;
 
-public class Gatherer extends Actor implements Collision {
+/**
+ * A Gatherer contains state and performs action every tick
+ */
+public class Gatherer extends Actor {
     private Point direction = Direction.LEFT;
     private boolean carrying = false;
     private boolean active = true;
     public static final String TYPE = "Gatherer";
 
+    /**
+     * Create a gatherer at a specified location in a given game
+     */
     public Gatherer(Point point, ShadowLife game) {
         super(point, game, TYPE, "res/images/gatherer.png");
     }
 
+    /**
+     * @return Return current direction of the gatherer
+     */
     public Point getDirection() {
         return direction;
     }
 
+    /**
+     * @return Return the carrying state of the gatherer
+     */
     public boolean isCarrying() {
         return carrying;
     }
 
+    /**
+     * @return Return the gatherer's state
+     */
     public boolean isActive() {
         return active;
     }
 
+    /**
+     * Set the direction of the gatherer
+     */
     public void setDirection(Point direction) {
         this.direction = direction;
     }
 
+    /**
+     * Set the carrying state of the gatherer
+     */
     public void setCarrying(boolean carrying) {
         this.carrying = carrying;
     }
 
+    /**
+     * Set the state of the gatherer
+     */
     public void setActive(boolean active) {
         this.active = active;
     }
 
-    @Override
-    public boolean standOnPool(Point location) {
+    /**
+     * @return Return true if the gatherer is stand on a pool
+     */
+    public boolean standOnPool() {
         ArrayList<Actor> actors = game.getActors();
         for (int i = 0; i < actors.size(); i++) {
             Point tmp = actors.get(i).getLocation();
-            if (tmp.equals(location) &&
+            if (tmp.equals(this.getLocation()) &&
                     actors.get(i).type.equals("MitosisPool")) {
                 return true;
             }
@@ -49,24 +75,29 @@ public class Gatherer extends Actor implements Collision {
         return false;
     }
 
-    @Override
-    public boolean standOnFence(Point location) {
+    /**
+     * @return Return true if the gatherer is stand on a fence
+     */
+    public boolean standOnFence() {
         ArrayList<Actor> actors = game.getActors();
         for (int i = 0; i < actors.size(); i++) {
             Point tmp = actors.get(i).getLocation();
-            if (tmp.equals(location) && actors.get(i).type.equals("Fence")) {
+            if (tmp.equals(this.getLocation()) && actors.get(i).type.equals("Fence")) {
                 return true;
             }
         }
         return false;
     }
 
-    @Override
-    public int standOnSign(Point location) {
+    /**
+     * @return Return the sign index in the main actors list
+     * that the gatherer stand on. If not return -1.
+     */
+    public int standOnSign() {
         ArrayList<Actor> actors = game.getActors();
         for (int i = 0; i < actors.size(); i++) {
             Point tmp = actors.get(i).getLocation();
-            if (tmp.equals(location)) {
+            if (tmp.equals(this.getLocation())) {
                 if (actors.get(i).type.equals("SignUp") ||
                         actors.get(i).type.equals("SignDown") ||
                         actors.get(i).type.equals("SignRight") ||
@@ -78,12 +109,15 @@ public class Gatherer extends Actor implements Collision {
         return -1;
     }
 
-    @Override
-    public int standOnTree(Point location) {
+    /**
+     * @return Return the tree index in the main actors list
+     * that the gatherer stand on. If not return -1.
+     */
+    public int standOnTree() {
         ArrayList<Actor> actors = game.getActors();
         for (int i = 0; i < actors.size(); i++) {
             Point tmp = actors.get(i).getLocation();
-            if (tmp.equals(location)) {
+            if (tmp.equals(this.getLocation())) {
                 if (actors.get(i).type.equals("Tree") ||
                         actors.get(i).type.equals("GoldenTree")) {
                     return i;
@@ -93,12 +127,15 @@ public class Gatherer extends Actor implements Collision {
         return -1;
     }
 
-    @Override
-    public int standOnStorage(Point location) {
+    /**
+     * @return Return the storage index in the main actors list
+     * that the gatherer stand on. If not return -1
+     */
+    public int standOnStorage() {
         ArrayList<Actor> actors = game.getActors();
         for (int i = 0; i < actors.size(); i++) {
             Point tmp = actors.get(i).getLocation();
-            if (tmp.equals(location)) {
+            if (tmp.equals(this.getLocation())) {
                 if (actors.get(i).type.equals("Hoard") ||
                         actors.get(i).type.equals("Stockpile")) {
                     return i;
@@ -108,6 +145,9 @@ public class Gatherer extends Actor implements Collision {
         return -1;
     }
 
+    /**
+     * Gatherer movement update in each tick
+     */
     @Override
     public void update() {
         ArrayList<Actor> actors = game.getActors();
@@ -115,22 +155,21 @@ public class Gatherer extends Actor implements Collision {
             this.move(direction.x * ShadowLife.TILE_SIZE,
                     direction.y * ShadowLife.TILE_SIZE);
         }
-        Point location = this.getLocation();
-        if (standOnFence(location)) {
+        if (standOnFence()) {
             setActive(false);
             moveBack(direction.x * ShadowLife.TILE_SIZE,
                     direction.y * ShadowLife.TILE_SIZE);
         }
-        if (standOnPool(location)) {
+        if (standOnPool()) {
             Point currDirection = this.getDirection();
             // Create one gatherer at its position with its direction
             // rotated 90 degrees counter-clockwise.
-            Gatherer newGathererOne = new Gatherer(location, this.game);
+            Gatherer newGathererOne = new Gatherer(this.getLocation(), this.game);
             newGathererOne.setDirection(Direction.rotate90CounterClockwise(currDirection));
             Point newGathererOneDirection = newGathererOne.direction;
             // Create one gatherer at its position with its direction
             // rotated 90 degrees clockwise.
-            Gatherer newGathererTwo = new Gatherer(location, this.game);
+            Gatherer newGathererTwo = new Gatherer(this.getLocation(), this.game);
             newGathererTwo.setDirection(Direction.rotate90Clockwise(currDirection));
             Point newGathererTwoDirection = newGathererTwo.direction;
             // Move both gatherers
@@ -145,7 +184,7 @@ public class Gatherer extends Actor implements Collision {
             this.setActive(false);
             this.setVisibility(false);
         }
-        int signIndex = standOnSign(location);
+        int signIndex = standOnSign();
         if (signIndex != -1) {
             Point signDirection;
             if (actors.get(signIndex).type.equals("SignRight")) {
@@ -159,7 +198,7 @@ public class Gatherer extends Actor implements Collision {
             }
             this.setDirection(signDirection);
         }
-        int treeIndex = standOnTree(location);
+        int treeIndex = standOnTree();
         if (treeIndex != -1 && !isCarrying()) {
             if (actors.get(treeIndex).type.equals("Tree")) {
                 Tree tree = ((Tree) actors.get(treeIndex));
@@ -172,9 +211,8 @@ public class Gatherer extends Actor implements Collision {
                 this.setCarrying(true);
                 this.setDirection(Direction.rotate180Clockwise(this.getDirection()));
             }
-
         }
-        int storageIndex = standOnStorage(location);
+        int storageIndex = standOnStorage();
         if (storageIndex != -1) {
             if (isCarrying()) {
                 this.setCarrying(false);

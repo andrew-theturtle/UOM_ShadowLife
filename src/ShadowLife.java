@@ -7,6 +7,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 
+/**
+ * Shadow Life is a graphical simulation of a world inhabited by creatures called gatherers.
+ * The behaviour of the simulation is entirely determined by the world File loaded when the Shadow
+ * Life program starts: each gatherer, thief, and other element begins at a specified location and
+ * follows a set of rules to determine their behaviour. Once all gatherers and thieves have reached a
+ * fence, the simulation halts, and the amount of fruit at each stockpile and hoard is tallied up.
+ */
 public class ShadowLife extends AbstractGame {
     private final Image background = new Image("res/images/background.png");
     public static final int TILE_SIZE = 64;
@@ -18,6 +25,9 @@ public class ShadowLife extends AbstractGame {
     private long lastTime;                      // keep track of last Tick time
     private int numTicks = 0;
 
+    /**
+     * Create the game from the loaded world file
+     */
     public ShadowLife() {
         // load world file and create corresponding actors
         try (BufferedReader csvReader =
@@ -61,15 +71,23 @@ public class ShadowLife extends AbstractGame {
         lastTime = System.currentTimeMillis();
     }
 
+    /**
+     * @return Return the main actors list
+     */
     public ArrayList<Actor> getActors() {
         return actors;
     }
 
+    /**
+     * @return Return the newly added actors list
+     */
     public ArrayList<Actor> getNewActors() {
         return newActors;
     }
 
-    // return true if all gatherer and thief are not active
+    /**
+     * @return Return true if all gatherer and thief are not active
+     */
     public boolean simulationFinished() {
         for (int i = 0; i < actors.size(); i++) {
             if (actors.get(i).type.equals("Gatherer")) {
@@ -83,6 +101,9 @@ public class ShadowLife extends AbstractGame {
         return true;
     }
 
+    /**
+     * Update the state of the game, potentially reading from input
+     */
     @Override
     protected void update(Input input) {
         // rendered background image
@@ -133,6 +154,10 @@ public class ShadowLife extends AbstractGame {
         }
     }
 
+    /**
+     * Main method which read in three command-line arguments
+     * then created and run the game
+     */
     public static void main(String[] args) {
         if (args.length != 3) {
             System.out.println("usage: ShadowLife <tick rate> <max ticks> <world file>");
