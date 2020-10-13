@@ -1,6 +1,6 @@
 import bagel.util.Point;
 
-public class Storage extends Actor {
+public abstract class Storage extends Actor {
     private int numFruits = 0;
 
     public Storage(Point point, ShadowLife game, String type, String imgSrc) {
