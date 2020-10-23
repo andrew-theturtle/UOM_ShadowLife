@@ -1,7 +1,7 @@
 import bagel.util.Point;
 
 /**
- * Represent an object that has storage's functionality
+ * Represent an object that has storage's functionality (store fruits)
  */
 public abstract class Storage extends Actor {
     private int numFruits = 0;

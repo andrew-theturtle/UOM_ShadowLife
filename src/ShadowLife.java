@@ -8,11 +8,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 
 /**
- * Shadow Life is a graphical simulation of a world inhabited by creatures called gatherers.
- * The behaviour of the simulation is entirely determined by the world File loaded when the Shadow
- * Life program starts: each gatherer, thief, and other element begins at a specified location and
- * follows a set of rules to determine their behaviour. Once all gatherers and thieves have reached a
- * fence, the simulation halts, and the amount of fruit at each stockpile and hoard is tallied up.
+ * The base class to initialize and run Shadow Life simulation
  */
 public class ShadowLife extends AbstractGame {
     private final Image background = new Image("res/images/background.png");
